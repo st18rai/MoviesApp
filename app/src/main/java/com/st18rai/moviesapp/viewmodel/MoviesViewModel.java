@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.st18rai.moviesapp.model.Movie;
+import com.st18rai.moviesapp.model.MovieDetails;
 import com.st18rai.moviesapp.repository.MoviesRepository;
 
 import java.util.List;
@@ -24,6 +25,11 @@ public class MoviesViewModel extends AndroidViewModel {
     public LiveData<List<Movie>> getMovies(String sortBy) {
         repository.loadMovies(sortBy);
         return repository.getMovies();
+    }
+
+    public LiveData<MovieDetails> getMovieDetails(int id) {
+        repository.loadMovieDetails(id);
+        return repository.getMovieDetails();
     }
 
 }

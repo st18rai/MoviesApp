@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.st18rai.moviesapp.R;
 import com.st18rai.moviesapp.adapter.MoviesRecyclerAdapter;
+import com.st18rai.moviesapp.interfaces.Constants;
 import com.st18rai.moviesapp.ui.BaseFragment;
+import com.st18rai.moviesapp.utils.FragmentUtil;
 import com.st18rai.moviesapp.viewmodel.MoviesViewModel;
 
 import butterknife.BindView;
@@ -54,8 +56,10 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.getMovies(sortBy).observe(this, movies ->
-                adapter.setData(movies));
+        if (!viewModel.getMovies(sortBy).hasObservers()) {
+            viewModel.getMovies(sortBy).observe(this, movies ->
+                    adapter.setData(movies));
+        }
 
     }
 
@@ -72,6 +76,9 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
 
     @Override
     public void onItemClick(int position) {
-
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.MOVIE_ID, adapter.getData().get(position).getId());
+        FragmentUtil.replaceFragment(getActivity().getSupportFragmentManager(),
+                new DetailMovieFragment(), true, bundle);
     }
 }
