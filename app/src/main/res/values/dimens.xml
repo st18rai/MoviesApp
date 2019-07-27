@@ -1,0 +1,14 @@
+<resources>
+    <!-- margins-->
+    <dimen name="small_margin">4dp</dimen>
+    <dimen name="default_margin">8dp</dimen>
+    <dimen name="medium_margin">12dp</dimen>
+    <dimen name="middle_margin">16dp</dimen>
+    <dimen name="big_margin">32dp</dimen>
+    <dimen name="huge_margin">64dp</dimen>
+
+    <!-- text sizes-->
+    <dimen name="title_text_size">18sp</dimen>
+    <dimen name="no_fav_text_size">24sp</dimen>
+
+</resources>
