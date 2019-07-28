@@ -10,7 +10,9 @@ public class MovieUtils {
         for (int i = 0; i < genreList.size(); i++) {
             genres.append(", ").append(genreList.get(i).getName());
         }
-        genres.deleteCharAt(0);
+        if (genreList.size() > 0) {
+            genres.deleteCharAt(0);
+        }
 
         return genres.toString();
     }

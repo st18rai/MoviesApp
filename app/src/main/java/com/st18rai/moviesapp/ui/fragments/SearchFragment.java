@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.st18rai.moviesapp.R;
 import com.st18rai.moviesapp.adapter.MoviesRecyclerAdapter;
+import com.st18rai.moviesapp.adapter.SearchRecyclerAdapter;
 import com.st18rai.moviesapp.interfaces.Constants;
 import com.st18rai.moviesapp.model.Movie;
 import com.st18rai.moviesapp.network.ApiClient;
@@ -43,7 +44,7 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class SearchFragment extends BaseFragment implements MoviesRecyclerAdapter.ItemClickListener {
+public class SearchFragment extends BaseFragment implements SearchRecyclerAdapter.ItemClickListener {
 
     @BindView(R.id.editText_search)
     EditText searchField;
@@ -55,7 +56,7 @@ public class SearchFragment extends BaseFragment implements MoviesRecyclerAdapte
     LinearLayout notFoundBox;
 
     private MoviesViewModel viewModel;
-    private MoviesRecyclerAdapter adapter;
+    private SearchRecyclerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
@@ -127,7 +128,7 @@ public class SearchFragment extends BaseFragment implements MoviesRecyclerAdapte
                 RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new MoviesRecyclerAdapter(this);
+        adapter = new SearchRecyclerAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
