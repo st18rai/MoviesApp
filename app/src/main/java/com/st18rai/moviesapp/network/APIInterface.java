@@ -1,8 +1,6 @@
 package com.st18rai.moviesapp.network;
 
-import com.st18rai.moviesapp.model.MovieDetails;
 import com.st18rai.moviesapp.model.Movie;
-
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -16,7 +14,7 @@ public interface APIInterface {
                                               @Query("sort_by") String sortBy);
 
     @GET("movie/{id}")
-    Observable<MovieDetails> getMovieDetails(@Path("id") int movieID,
-                                             @Query("api_key") String apiKey);
+    Observable<Movie> getMovieDetails(@Path("id") int movieID,
+                                      @Query("api_key") String apiKey);
 
 }

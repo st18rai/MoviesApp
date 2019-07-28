@@ -1,86 +1,107 @@
 package com.st18rai.moviesapp.model;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
+import com.st18rai.moviesapp.interfaces.Constants;
+import com.st18rai.moviesapp.utils.MovieUtils;
 
 import java.util.List;
 
+@Entity(tableName = Constants.MOVIE_TABLE_NAME)
 public class Movie {
-    @SerializedName("vote_count")
-    private int voteCount;
+    @PrimaryKey
     private int id;
-    private boolean video;
-    @SerializedName("vote_average")
-    private double voteAverage;
     private String title;
-    private double popularity;
     @SerializedName("poster_path")
     private String posterPath;
-    @SerializedName("original_language")
-    private String originalLanguage;
-    @SerializedName("original_title")
-    private String originalTitle;
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds = null;
-    @SerializedName("backdrop_path")
-    private String backdropPath;
-    private boolean adult;
     private String overview;
     @SerializedName("release_date")
     private String releaseDate;
+    @SerializedName("vote_average")
+    private double voteAverage;
+    @SerializedName("vote_count")
+    private int voteCount;
 
-    public int getVoteCount() {
-        return voteCount;
+    private String movieGenres;
+    private boolean liked;
+
+    @Ignore
+    private List<Genre> genres = null;
+
+    public Movie(int id, String title, String posterPath, String overview, String releaseDate,
+                 double voteAverage, int voteCount, String movieGenres, boolean liked) {
+        this.id = id;
+        this.title = title;
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.voteAverage = voteAverage;
+        this.voteCount = voteCount;
+        this.movieGenres = movieGenres;
+        this.liked = liked;
     }
 
-    public int getId() {
-        return id;
+    public String getMovieGenres() {
+        if (genres != null)
+            movieGenres = MovieUtils.prepareGenres(genres);
+        return movieGenres;
     }
 
-    public boolean isVideo() {
-        return video;
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
     public double getVoteAverage() {
         return voteAverage;
     }
 
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public class Genre {
+        private int id;
+        private String name;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public double getPopularity() {
-        return popularity;
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     public String getPosterPath() {
         return posterPath;
     }
 
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public String getBackdropPath() {
-        return backdropPath;
-    }
-
-    public boolean isAdult() {
-        return adult;
-    }
 
     public String getOverview() {
         return overview;
     }
 
-    public String getReleaseDate() {
-        return releaseDate;
-    }
 }

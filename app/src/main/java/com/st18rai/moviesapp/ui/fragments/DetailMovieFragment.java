@@ -15,16 +15,15 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.st18rai.moviesapp.R;
 import com.st18rai.moviesapp.interfaces.Constants;
-import com.st18rai.moviesapp.model.MovieDetails;
+import com.st18rai.moviesapp.model.Movie;
 import com.st18rai.moviesapp.network.ApiClient;
 import com.st18rai.moviesapp.ui.BaseFragment;
 import com.st18rai.moviesapp.ui.MainActivity;
 import com.st18rai.moviesapp.viewmodel.MoviesViewModel;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DetailMovieFragment extends BaseFragment {
     @BindView(R.id.poster)
@@ -50,6 +49,8 @@ public class DetailMovieFragment extends BaseFragment {
 
     private MoviesViewModel viewModel;
     private int movieID;
+    private boolean fromFavorite;
+    private Movie currentMovie;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
@@ -60,6 +61,7 @@ public class DetailMovieFragment extends BaseFragment {
 
         if (getArguments() != null) {
             movieID = getArguments().getInt(Constants.MOVIE_ID);
+            fromFavorite = getArguments().getBoolean(Constants.FROM_FAVORITES, false);
         }
 
         viewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
@@ -87,33 +89,60 @@ public class DetailMovieFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.getMovieDetails(movieID).observe(this, movieDetails ->
-                setDataToUI(movieDetails));
+        viewModel.getMovieDetails(movieID).observe(this, movieDetails -> {
+            currentMovie = movieDetails;
+            currentMovie.setLiked(fromFavorite);
+
+            if (fromFavorite)
+                setDataToUI(currentMovie);
+            else
+                checkFavorites(currentMovie);
+        });
     }
 
-    private void setDataToUI(MovieDetails data) {
+    private void checkFavorites(Movie currentMovie) {
+
+        viewModel.getFavoriteMovies().observe(this, favorites -> {
+            for (int i = 0; i < favorites.size(); i++) {
+                if (currentMovie.getId() == favorites.get(i).getId()) {
+                    currentMovie.setLiked(true);
+                    break;
+                } else {
+                    currentMovie.setLiked(false);
+                }
+            }
+            setDataToUI(currentMovie);
+        });
+    }
+
+    private void setDataToUI(Movie data) {
 
         ((MainActivity) getActivity()).setTitle(data.getTitle());
+
+        if (data.isLiked()) {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_filled_24dp));
+        } else {
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_24dp));
+        }
 
         description.setText(data.getOverview());
 
         date.setText(getString(R.string.date, data.getReleaseDate()));
         voteCount.setText(getString(R.string.vote_count, data.getVoteCount()));
         voteAverage.setText(getString(R.string.vote_average, data.getVoteAverage()));
-        genre.setText(getString(R.string.genre, prepareGenres(data.getGenres())));
+        genre.setText(getString(R.string.genre, data.getMovieGenres()));
 
         Glide.with(getContext())
                 .load(ApiClient.BASE_IMAGE_URL + data.getPosterPath())
                 .into(poster);
     }
 
-    private String prepareGenres(List<MovieDetails.Genre> genreList) {
-        StringBuilder genres = new StringBuilder();
-        for (int i = 0; i < genreList.size(); i++) {
-            genres.append(",").append(genreList.get(i).getName());
-        }
-        genres.deleteCharAt(0);
+    @OnClick(R.id.fab)
+    public void onFabClick() {
 
-        return genres.toString();
+        viewModel.updateLike(currentMovie).observe(this, liked -> fab.setImageDrawable(liked ?
+                getResources().getDrawable(R.drawable.ic_favorite_filled_24dp) :
+                getResources().getDrawable(R.drawable.ic_favorite_24dp)));
     }
+
 }

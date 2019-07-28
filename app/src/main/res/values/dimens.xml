@@ -13,5 +13,7 @@
 
     <!-- image sizes -->
     <dimen name="big_poster_height">280dp</dimen>
+    <dimen name="fav_icon_size">40dp</dimen>
+    <dimen name="card_height">120dp</dimen>
 
 </resources>
