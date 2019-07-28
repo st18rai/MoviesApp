@@ -2,6 +2,9 @@ package com.st18rai.moviesapp.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.st18rai.moviesapp.R;
 import com.st18rai.moviesapp.adapter.MainPagerAdapter;
 import com.st18rai.moviesapp.ui.BaseFragment;
+import com.st18rai.moviesapp.utils.FragmentUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +35,8 @@ public class MainFragment extends BaseFragment {
 
         ButterKnife.bind(this, view);
 
+        setHasOptionsMenu(true);
+
         return view;
     }
 
@@ -39,6 +45,22 @@ public class MainFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         init();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_search){
+            FragmentUtil.replaceFragment(getFragmentManager(), new SearchFragment(), true);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {

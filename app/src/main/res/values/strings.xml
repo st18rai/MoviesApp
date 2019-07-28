@@ -8,4 +8,7 @@
     <string name="vote_count">Vote count: %1$d</string>
     <string name="vote_average">Vote average: %1$f</string>
     <string name="no_favorites">No favorites</string>
+    <string name="not_found">Not found</string>
+    <string name="search_hint">Enter query</string>
+    <string name="search">Search</string>
 </resources>

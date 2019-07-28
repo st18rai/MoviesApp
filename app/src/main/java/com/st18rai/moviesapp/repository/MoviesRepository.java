@@ -2,6 +2,7 @@ package com.st18rai.moviesapp.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,9 +11,15 @@ import com.st18rai.moviesapp.db.MoviesDatabase;
 import com.st18rai.moviesapp.interfaces.MoviesDao;
 import com.st18rai.moviesapp.model.Movie;
 import com.st18rai.moviesapp.network.ApiClient;
+import com.st18rai.moviesapp.network.BaseResponse;
 import com.st18rai.moviesapp.utils.RxUtil;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class MoviesRepository {
 
@@ -26,10 +33,19 @@ public class MoviesRepository {
     }
 
     private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
+    private final MutableLiveData<List<Movie>> foundMovies = new MutableLiveData<>();
     private final MutableLiveData<Movie> movieDetails = new MutableLiveData<>();
 
     public LiveData<List<Movie>> getMovies() {
         return movies;
+    }
+
+    private void setFoundMovies(List<Movie> data) {
+        foundMovies.setValue(data);
+    }
+
+    public LiveData<List<Movie>> getFoundMovies() {
+        return foundMovies;
     }
 
     private void setMovies(List<Movie> data) {
@@ -54,6 +70,12 @@ public class MoviesRepository {
     public void loadMovieDetails(int id) {
         RxUtil.networkConsumer(ApiClient.getApiInterface().getMovieDetails(id, ApiClient.API_KEY),
                 movieDetails -> setMovieDetails(movieDetails),
+                throwable -> throwable.printStackTrace());
+    }
+
+    public void searchForMovie(String query) {
+        RxUtil.searchConsumer(ApiClient.getApiInterface().searchForMovie(ApiClient.API_KEY, query),
+                movieBaseResponse -> setFoundMovies(movieBaseResponse.getDataList()),
                 throwable -> throwable.printStackTrace());
     }
 

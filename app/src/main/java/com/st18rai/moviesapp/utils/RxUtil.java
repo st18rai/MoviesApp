@@ -60,6 +60,20 @@ public class RxUtil {
                 } : errorConsumer);
     }
 
+    public static <S> void searchConsumer(Observable<S> observable, Consumer<S> consumer, @Nullable Consumer<Throwable> errorConsumer) {
+        observable
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer, errorConsumer == null ? new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                } : errorConsumer);
+    }
+
     public static <S> void networkConsumer(Observable<S> observable, Consumer<S> consumer) {
         networkConsumer(observable, consumer, null);
     }

@@ -25,10 +25,6 @@ public class MoviesViewModel extends AndroidViewModel {
         favoriteMovies = repository.getAllFavoriteMovies();
     }
 
-    private void setLiked(boolean liked) {
-        isLiked.setValue(liked);
-    }
-
     public LiveData<List<Movie>> getMovies(String sortBy) {
         repository.loadMovies(sortBy);
         return repository.getMovies();
@@ -37,6 +33,11 @@ public class MoviesViewModel extends AndroidViewModel {
     public LiveData<Movie> getMovieDetails(int id) {
         repository.loadMovieDetails(id);
         return repository.getMovieDetails();
+    }
+
+    public LiveData<List<Movie>> searchForMovie(String query) {
+        repository.searchForMovie(query);
+        return repository.getFoundMovies();
     }
 
     public LiveData<Boolean> updateLike(Movie currentMovie) {

@@ -21,6 +21,8 @@ import com.st18rai.moviesapp.ui.BaseFragment;
 import com.st18rai.moviesapp.ui.MainActivity;
 import com.st18rai.moviesapp.viewmodel.MoviesViewModel;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -53,7 +55,7 @@ public class DetailMovieFragment extends BaseFragment {
     private Movie currentMovie;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
@@ -73,16 +75,14 @@ public class DetailMovieFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
 
-        // set title and toolbar state
-        ((MainActivity) getActivity()).setBackButtonEnabled(true);
-
+        showBackButton();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity) getActivity()).setBackButtonEnabled(false);
-        ((MainActivity) getActivity()).setTitle(getString(R.string.app_name));
+
+        hideBackButton();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class DetailMovieFragment extends BaseFragment {
 
     private void setDataToUI(Movie data) {
 
-        ((MainActivity) getActivity()).setTitle(data.getTitle());
+        ((MainActivity) Objects.requireNonNull(getActivity())).setTitle(data.getTitle());
 
         if (data.isLiked()) {
             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_filled_24dp));
@@ -132,13 +132,13 @@ public class DetailMovieFragment extends BaseFragment {
         voteAverage.setText(getString(R.string.vote_average, data.getVoteAverage()));
         genre.setText(getString(R.string.genre, data.getMovieGenres()));
 
-        Glide.with(getContext())
+        Glide.with(Objects.requireNonNull(getContext()))
                 .load(ApiClient.BASE_IMAGE_URL + data.getPosterPath())
                 .into(poster);
     }
 
     @OnClick(R.id.fab)
-    public void onFabClick() {
+    void onFabClick() {
 
         viewModel.updateLike(currentMovie).observe(this, liked -> fab.setImageDrawable(liked ?
                 getResources().getDrawable(R.drawable.ic_favorite_filled_24dp) :

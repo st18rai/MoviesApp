@@ -17,4 +17,8 @@ public interface APIInterface {
     Observable<Movie> getMovieDetails(@Path("id") int movieID,
                                       @Query("api_key") String apiKey);
 
+    @GET("search/movie")
+    Observable<BaseResponse<Movie>> searchForMovie(@Query("api_key") String apiKey,
+                                  @Query("query") String query);
+
 }
