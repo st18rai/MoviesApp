@@ -10,6 +10,7 @@ public class MovieUtils {
         for (int i = 0; i < genreList.size(); i++) {
             genres.append(", ").append(genreList.get(i).getName());
         }
+
         if (genreList.size() > 0) {
             genres.deleteCharAt(0);
         }

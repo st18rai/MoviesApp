@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.st18rai.moviesapp.R;
 import com.st18rai.moviesapp.adapter.MoviesRecyclerAdapter;
@@ -22,13 +23,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
-public class TabMoviesListFragment extends BaseFragment implements MoviesRecyclerAdapter.ItemClickListener {
+public class TabMoviesListFragment extends BaseFragment implements MoviesRecyclerAdapter.ItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
+
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+
     private MoviesViewModel viewModel;
     private MoviesRecyclerAdapter adapter;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
@@ -38,6 +43,9 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
         ButterKnife.bind(this, view);
 
         viewModel = ViewModelProviders.of(getActivity()).get(MoviesViewModel.class);
+
+        swipeRefresh.setOnRefreshListener(this);
+        swipeRefresh.setRefreshing(true);
 
         setRecycler();
 
@@ -57,7 +65,10 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
 
         if (!viewModel.getMovies(Constants.SORT_BY_POPULARITY).hasObservers()) {
             viewModel.getMovies(Constants.SORT_BY_POPULARITY).observe(this, movies ->
-                    adapter.setData(movies));
+            {
+                swipeRefresh.setRefreshing(false);
+                adapter.setData(movies);
+            });
         }
 
     }
@@ -68,9 +79,10 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
         recyclerView.setLayoutManager(linearLayoutManager);
 
         adapter = new MoviesRecyclerAdapter(this);
-        ScaleInAnimationAdapter newsAnimationAdapter = new ScaleInAnimationAdapter(adapter);
-        newsAnimationAdapter.setFirstOnly(false);
-        recyclerView.setAdapter(newsAnimationAdapter);
+        ScaleInAnimationAdapter moviesAnimationAdapter = new ScaleInAnimationAdapter(adapter);
+        moviesAnimationAdapter.setFirstOnly(true);
+
+        recyclerView.setAdapter(moviesAnimationAdapter);
     }
 
     @Override
@@ -79,5 +91,14 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
         bundle.putInt(Constants.MOVIE_ID, adapter.getData().get(position).getId());
         FragmentUtil.replaceFragment(getActivity().getSupportFragmentManager(),
                 new DetailMovieFragment(), true, bundle);
+    }
+
+    @Override
+    public void onRefresh() {
+        viewModel.getMovies(Constants.SORT_BY_POPULARITY).observe(this, movies ->
+        {
+            swipeRefresh.setRefreshing(false);
+            adapter.setData(movies);
+        });
     }
 }
