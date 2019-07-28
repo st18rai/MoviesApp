@@ -11,4 +11,9 @@
     <string name="not_found">Not found</string>
     <string name="search_hint">Enter query</string>
     <string name="search">Search</string>
+    <string name="selected_genres">Selected genres:</string>
+    <string name="select_genre">Select genre</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="nothing_selected">Nothing selected</string>
 </resources>

@@ -56,8 +56,16 @@ public class MainFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.action_search){
-            FragmentUtil.replaceFragment(getFragmentManager(), new SearchFragment(), true);
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                FragmentUtil.replaceFragment(getFragmentManager(), new SearchFragment(),
+                        true);
+                break;
+
+            case R.id.action_filter:
+                FragmentUtil.replaceFragment(getFragmentManager(), new GenreFilterFragment(),
+                        true);
+                break;
         }
 
         return super.onOptionsItemSelected(item);

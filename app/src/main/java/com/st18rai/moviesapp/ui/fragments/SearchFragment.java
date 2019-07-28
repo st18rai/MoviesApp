@@ -78,6 +78,8 @@ public class SearchFragment extends BaseFragment implements MoviesRecyclerAdapte
         super.onStart();
 
         showBackButton();
+        setTitle(getString(R.string.search));
+
     }
 
     @Override
@@ -127,14 +129,10 @@ public class SearchFragment extends BaseFragment implements MoviesRecyclerAdapte
 
         adapter = new MoviesRecyclerAdapter(this);
         recyclerView.setAdapter(adapter);
-
     }
 
     @SuppressLint("CheckResult")
     private void search(String s) {
-        Log.d("before search: ", s);
-        //setLoading(true);
-
         viewModel.searchForMovie(s).observe(this, movieList -> {
             if (movieList.isEmpty()) {
                 notFoundBox.setVisibility(View.VISIBLE);
@@ -157,7 +155,7 @@ public class SearchFragment extends BaseFragment implements MoviesRecyclerAdapte
     public void onItemClick(int position) {
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.MOVIE_ID, adapter.getData().get(position).getId());
-        FragmentUtil.replaceFragment(getActivity().getSupportFragmentManager(),
+        FragmentUtil.replaceFragment(getFragmentManager(),
                 new DetailMovieFragment(), true, bundle);
     }
 }

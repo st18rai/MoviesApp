@@ -29,7 +29,6 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
     private MoviesViewModel viewModel;
     private MoviesRecyclerAdapter adapter;
 
-    private String sortBy = "popularity.des";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
@@ -56,8 +55,8 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (!viewModel.getMovies(sortBy).hasObservers()) {
-            viewModel.getMovies(sortBy).observe(this, movies ->
+        if (!viewModel.getMovies(Constants.SORT_BY_POPULARITY).hasObservers()) {
+            viewModel.getMovies(Constants.SORT_BY_POPULARITY).observe(this, movies ->
                     adapter.setData(movies));
         }
 

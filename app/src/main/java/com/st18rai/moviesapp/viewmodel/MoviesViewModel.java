@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.st18rai.moviesapp.model.Genre;
 import com.st18rai.moviesapp.model.Movie;
 import com.st18rai.moviesapp.repository.MoviesRepository;
 
@@ -30,6 +31,11 @@ public class MoviesViewModel extends AndroidViewModel {
         return repository.getMovies();
     }
 
+    public LiveData<List<Movie>> getMoviesByGenre(String sortBy, String genresID) {
+        repository.loadMoviesByGenre(sortBy, genresID);
+        return repository.getMoviesByGenre();
+    }
+
     public LiveData<Movie> getMovieDetails(int id) {
         repository.loadMovieDetails(id);
         return repository.getMovieDetails();
@@ -40,9 +46,14 @@ public class MoviesViewModel extends AndroidViewModel {
         return repository.getFoundMovies();
     }
 
+    public LiveData<List<Genre>> getGenres() {
+        repository.loadGenres();
+        return repository.getGenres();
+    }
+
     public LiveData<Boolean> updateLike(Movie currentMovie) {
 
-        if (currentMovie.isLiked()){
+        if (currentMovie.isLiked()) {
             currentMovie.setLiked(false);
             delete(currentMovie);
             isLiked.setValue(false);
@@ -53,6 +64,29 @@ public class MoviesViewModel extends AndroidViewModel {
         }
 
         return isLiked;
+    }
+
+    public String[] prepareGenresArray(List<Genre> genres) {
+        String[] genresArray = new String[genres.size()];
+        for (int i = 0; i < genres.size(); i++) {
+            genresArray[i] = genres.get(i).getName();
+        }
+        return genresArray;
+    }
+
+    public String prepareSelectedGenres(List<Genre> genres, int type) {
+        StringBuilder prepared = new StringBuilder();
+        for (int i = 0; i < genres.size(); i++) {
+            if (genres.get(i).isSelected()) {
+                if (type == 0) // prepare names
+                    prepared.append(", ").append(genres.get(i).getName());
+                if (type == 1) // prepare IDs
+                    prepared.append(", ").append(genres.get(i).getId());
+            }
+        }
+        prepared.deleteCharAt(0);
+
+        return prepared.toString();
     }
 
     // db methods

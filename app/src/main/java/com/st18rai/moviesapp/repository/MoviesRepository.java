@@ -2,24 +2,18 @@ package com.st18rai.moviesapp.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.st18rai.moviesapp.db.MoviesDatabase;
 import com.st18rai.moviesapp.interfaces.MoviesDao;
+import com.st18rai.moviesapp.model.Genre;
 import com.st18rai.moviesapp.model.Movie;
 import com.st18rai.moviesapp.network.ApiClient;
-import com.st18rai.moviesapp.network.BaseResponse;
 import com.st18rai.moviesapp.utils.RxUtil;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class MoviesRepository {
 
@@ -34,10 +28,24 @@ public class MoviesRepository {
 
     private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> foundMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<Movie>> moviesByGenre = new MutableLiveData<>();
+    private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
     private final MutableLiveData<Movie> movieDetails = new MutableLiveData<>();
+
+    private void setMovies(List<Movie> data) {
+        movies.setValue(data);
+    }
 
     public LiveData<List<Movie>> getMovies() {
         return movies;
+    }
+
+    private void setGenres(List<Genre> data) {
+        genres.setValue(data);
+    }
+
+    public LiveData<List<Genre>> getGenres() {
+        return genres;
     }
 
     private void setFoundMovies(List<Movie> data) {
@@ -48,8 +56,12 @@ public class MoviesRepository {
         return foundMovies;
     }
 
-    private void setMovies(List<Movie> data) {
-        movies.setValue(data);
+    private void setMoviesByGenre(List<Movie> data) {
+        moviesByGenre.setValue(data);
+    }
+
+    public LiveData<List<Movie>> getMoviesByGenre() {
+        return moviesByGenre;
     }
 
     private void setMovieDetails(Movie data) {
@@ -67,6 +79,12 @@ public class MoviesRepository {
                 throwable -> throwable.printStackTrace());
     }
 
+    public void loadMoviesByGenre(String sort, String genresID) {
+        RxUtil.networkConsumer(ApiClient.getApiInterface().getMoviesByGenre(ApiClient.API_KEY, sort, genresID),
+                movieBaseResponse -> setMoviesByGenre(movieBaseResponse.getDataList()),
+                throwable -> throwable.printStackTrace());
+    }
+
     public void loadMovieDetails(int id) {
         RxUtil.networkConsumer(ApiClient.getApiInterface().getMovieDetails(id, ApiClient.API_KEY),
                 movieDetails -> setMovieDetails(movieDetails),
@@ -76,6 +94,12 @@ public class MoviesRepository {
     public void searchForMovie(String query) {
         RxUtil.searchConsumer(ApiClient.getApiInterface().searchForMovie(ApiClient.API_KEY, query),
                 movieBaseResponse -> setFoundMovies(movieBaseResponse.getDataList()),
+                throwable -> throwable.printStackTrace());
+    }
+
+    public void loadGenres() {
+        RxUtil.networkConsumer(ApiClient.getApiInterface().getGenres(ApiClient.API_KEY),
+                genreBaseResponse -> genres.setValue(genreBaseResponse.getDataList()),
                 throwable -> throwable.printStackTrace());
     }
 

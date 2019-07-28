@@ -10,7 +10,7 @@ public class BaseResponse<T> {
     private int totalResults;
     @SerializedName("total_pages")
     private int totalPages;
-    @SerializedName("results")
+    @SerializedName(value = "results" , alternate = "genres")
     private List<T> dataList = null;
 
     public int getPage() {
