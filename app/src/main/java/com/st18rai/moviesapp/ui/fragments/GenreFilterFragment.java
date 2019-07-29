@@ -55,7 +55,7 @@ public class GenreFilterFragment extends BaseFragment implements MoviesRecyclerA
 
         ButterKnife.bind(this, view);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(MoviesViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         setRecycler();
 
@@ -89,7 +89,7 @@ public class GenreFilterFragment extends BaseFragment implements MoviesRecyclerA
     }
 
     private void setRecycler() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(),
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 

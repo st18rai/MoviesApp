@@ -40,7 +40,7 @@ public class TabFavoritesMoviesFragment extends BaseFragment implements MoviesRe
 
         ButterKnife.bind(this, view);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(MoviesViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         setRecycler();
 

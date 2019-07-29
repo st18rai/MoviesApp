@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,9 @@ public class DetailMovieFragment extends BaseFragment {
     @BindView(R.id.description)
     TextView description;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     private MoviesViewModel viewModel;
     private int movieID;
     private boolean fromFavorite;
@@ -60,6 +64,8 @@ public class DetailMovieFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         ButterKnife.bind(this, view);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         if (getArguments() != null) {
             movieID = getArguments().getInt(Constants.MOVIE_ID);
@@ -90,6 +96,9 @@ public class DetailMovieFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel.getMovieDetails(movieID).observe(this, movieDetails -> {
+
+            progressBar.setVisibility(View.GONE);
+
             currentMovie = movieDetails;
             currentMovie.setLiked(fromFavorite);
 

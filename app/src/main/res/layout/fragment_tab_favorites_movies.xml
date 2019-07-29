@@ -34,6 +34,5 @@
             android:layout_height="@dimen/fav_icon_size"
             app:srcCompat="@drawable/ic_favorite_filled_24dp" />
 
-
     </LinearLayout>
 </FrameLayout>
