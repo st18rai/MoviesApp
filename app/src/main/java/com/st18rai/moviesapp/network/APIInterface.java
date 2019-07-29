@@ -15,6 +15,11 @@ public interface APIInterface {
                                               @Query("sort_by") String sortBy);
 
     @GET("discover/movie")
+    Observable<BaseResponse<Movie>> getMoreMovies(@Query("api_key") String apiKey,
+                                                  @Query("page") int page,
+                                                  @Query("sort_by") String sortBy);
+
+    @GET("discover/movie")
     Observable<BaseResponse<Movie>> getMoviesByGenre(@Query("api_key") String apiKey,
                                                      @Query("sort_by") String sortBy,
                                                      @Query("with_genres") String genresID);

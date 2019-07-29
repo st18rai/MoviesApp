@@ -31,6 +31,11 @@ public class MoviesViewModel extends AndroidViewModel {
         return repository.getMovies();
     }
 
+    public LiveData<List<Movie>> getMoreMovies(int page, String sortBy) {
+        repository.loadMoreMovies(page, sortBy);
+        return repository.getMoreMovies();
+    }
+
     public LiveData<List<Movie>> getMoviesByGenre(String sortBy, String genresID) {
         repository.loadMoviesByGenre(sortBy, genresID);
         return repository.getMoviesByGenre();

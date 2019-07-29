@@ -34,6 +34,7 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
 
     private MoviesViewModel viewModel;
     private MoviesRecyclerAdapter adapter;
+    private int pageToLoad = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle
@@ -42,7 +43,7 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
 
         ButterKnife.bind(this, view);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(MoviesViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         swipeRefresh.setOnRefreshListener(this);
         swipeRefresh.setRefreshing(true);
@@ -83,6 +84,18 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
         moviesAnimationAdapter.setFirstOnly(true);
 
         recyclerView.setAdapter(moviesAnimationAdapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getData().size() - 1) {
+                    //bottom of list
+                    loadMoreData();
+                }
+            }
+        });
     }
 
     @Override
@@ -98,7 +111,19 @@ public class TabMoviesListFragment extends BaseFragment implements MoviesRecycle
         viewModel.getMovies(Constants.SORT_BY_POPULARITY).observe(this, movies ->
         {
             swipeRefresh.setRefreshing(false);
+            pageToLoad = 1;
             adapter.setData(movies);
+        });
+    }
+
+    private void loadMoreData() {
+        swipeRefresh.setRefreshing(true);
+
+        pageToLoad++;
+
+        viewModel.getMoreMovies(pageToLoad, Constants.SORT_BY_POPULARITY).observe(this, movieList -> {
+            swipeRefresh.setRefreshing(false);
+            adapter.addData(movieList);
         });
     }
 }

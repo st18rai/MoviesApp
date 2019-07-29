@@ -14,7 +14,9 @@ import com.bumptech.glide.Glide;
 import com.st18rai.moviesapp.R;
 import com.st18rai.moviesapp.model.Movie;
 import com.st18rai.moviesapp.network.ApiClient;
+import com.st18rai.moviesapp.utils.MovieUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,6 +36,12 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
     public void setData(List<Movie> data) {
         this.data = data;
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<Movie> data) {
+        this.data.addAll(data);
+        this.data = MovieUtils.removeDuplicates(new ArrayList<>(this.data));
         notifyDataSetChanged();
     }
 

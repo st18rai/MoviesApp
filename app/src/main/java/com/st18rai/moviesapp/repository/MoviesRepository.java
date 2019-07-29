@@ -27,6 +27,7 @@ public class MoviesRepository {
     }
 
     private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
+    private final MutableLiveData<List<Movie>> moreMovies = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> foundMovies = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> moviesByGenre = new MutableLiveData<>();
     private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
@@ -39,6 +40,15 @@ public class MoviesRepository {
     public LiveData<List<Movie>> getMovies() {
         return movies;
     }
+
+    private void setMoreMovies(List<Movie> data) {
+        moreMovies.setValue(data);
+    }
+
+    public LiveData<List<Movie>> getMoreMovies() {
+        return moreMovies;
+    }
+
 
     private void setGenres(List<Genre> data) {
         genres.setValue(data);
@@ -79,6 +89,12 @@ public class MoviesRepository {
                 throwable -> throwable.printStackTrace());
     }
 
+    public void loadMoreMovies(int page, String sort) {
+        RxUtil.networkConsumer(ApiClient.getApiInterface().getMoreMovies(ApiClient.API_KEY, page, sort),
+                movieBaseResponse -> setMoreMovies(movieBaseResponse.getDataList()),
+                throwable -> throwable.printStackTrace());
+    }
+
     public void loadMoviesByGenre(String sort, String genresID) {
         RxUtil.networkConsumer(ApiClient.getApiInterface().getMoviesByGenre(ApiClient.API_KEY, sort, genresID),
                 movieBaseResponse -> setMoviesByGenre(movieBaseResponse.getDataList()),
@@ -99,7 +115,7 @@ public class MoviesRepository {
 
     public void loadGenres() {
         RxUtil.networkConsumer(ApiClient.getApiInterface().getGenres(ApiClient.API_KEY),
-                genreBaseResponse -> genres.setValue(genreBaseResponse.getDataList()),
+                genreBaseResponse -> setGenres(genreBaseResponse.getDataList()),
                 throwable -> throwable.printStackTrace());
     }
 
